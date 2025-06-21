@@ -1,0 +1,56 @@
+_exclude:
+  - "*"
+  - "!*/"
+  - ".git"
+
+project_name:
+  type: str
+  help: "What is the name of your project?"
+
+project_slug:
+  type: str
+  default: "{{ project_name | lower | replace(' ', '_') }}"
+
+project_version:
+  type: str
+  help: "What is the version of your project?"
+  default: "0.1.0"
+
+project_description:
+  type: str
+  help: "What is the description of your project?"
+  default: "Add your description here"
+
+python_version:
+  type: str
+  help: "What Python version do you want to use?"
+  default: "3.12"
+
+author_name:
+  type: str
+  help: "What is the name of the author?"
+  default: "Artem Sokolov"
+
+author_username:
+  type: str
+  default: "{{ author_name | lower | replace(' ', '') }}"
+
+author_email:
+  type: str
+  help: "What is the email of the author?"
+  default: "artem.sokolov.dev@gmail.com"
+
+use_drf:
+  type: bool
+  help: "Do you want to use Django REST Framework?"
+  default: true
+
+use_ruff:
+  type: bool
+  help: "Do you want to use Ruff?"
+  default: true
+
+use_psql:
+  type: bool
+  help: "Do you want to use Postgresql?"
+  default: true
