@@ -1,0 +1,38 @@
+services:
+  {%- if use_psql %}
+  postgres:
+    image: postgres:latest
+    container_name: {{project_slug}}_postgres_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:${POSTGRES_PORT}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+  {%- else %}
+  mysql:
+    image: mysql:latest
+    container_name: {{project_slug}}_mysql_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:${MYSQL_PORT}"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+  {%- endif %}
+
+volumes:
+  {%- if use_psql %}
+  postgres_data:
+  {%- else %}
+  mysql_data:
+  {%- endif %}
