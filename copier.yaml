@@ -2,6 +2,7 @@ _exclude:
   - "*"
   - "!*/"
   - ".git"
+  - "tests"
 
 project_name:
   type: str
@@ -29,7 +30,6 @@ python_version:
 author_name:
   type: str
   help: "What is the name of the author?"
-  default: "Artem Sokolov"
 
 author_username:
   type: str
@@ -38,7 +38,6 @@ author_username:
 author_email:
   type: str
   help: "What is the email of the author?"
-  default: "artem.sokolov.dev@gmail.com"
 
 use_drf:
   type: bool

@@ -1,0 +1,49 @@
+include .env
+export
+
+PROJECT_NAME = {{ project_name }}
+
+.PHONY: git-init
+git-init:
+	git init
+	git add .
+	git commit -m "Initial commit"
+
+.PHONY: uv-sync
+uv-sync:
+	uv sync
+	uv sync --extra dev
+
+.PHONY: pre-commit-setup
+pre-commit-setup:
+	uv run pre-commit install
+	uv run pre-commit autoupdate
+
+.PHONY: pre-commit-run
+pre-commit-run:
+	uv run pre-commit run --all-files --show-diff-on-failure || \
+	uv run pre-commit run --all-files
+
+.PHONY: build-app
+build-app:
+	docker compose -f docker/apps.yaml build
+
+.PHONY: up-app
+up-app:
+	docker compose -f docker/apps.yaml up -d
+
+.PHONY: up-storages
+up-storages:
+	docker compose -f docker/storages.yaml up -d
+
+.PHONY: logs
+logs:
+	docker compose -f docker/apps.yaml logs -f
+
+.PHONY: project
+project: git-init uv-sync \
+	pre-commit-setup pre-commit-run \
+	build-app up-app up-storages logs
+
+.PHONY: dev
+dev: pre-commit-run build-up up-app up-storages logs

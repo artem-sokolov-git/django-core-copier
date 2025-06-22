@@ -1,0 +1,43 @@
+FROM python:{{ python_version }}-slim
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+    UV_CACHE_DIR=/home/app/.cache/uv
+
+# Install system dependencies and create app user
+RUN apt-get update && apt-get install -y \
+    {%- if use_psql %}
+    libpq-dev \
+    {%- else %}
+    default-libmysqlclient-dev \
+    pkg-config \
+    {%- endif %}
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -r app && useradd -r -g app -m app
+
+# Set work directory and change ownership
+WORKDIR /app
+RUN chown app:app /app
+
+# Switch to app user
+USER app
+
+# Copy dependency files
+COPY --chown=app:app pyproject.toml ./
+
+# Install dependencies with optimizations
+RUN uv sync --no-dev --compile-bytecode
+
+# Copy application code
+COPY --chown=app:app . .
+
+# Expose port
+EXPOSE 8000
+
+# Run development server
+CMD ["uv", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]

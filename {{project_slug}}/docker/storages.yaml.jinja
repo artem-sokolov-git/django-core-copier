@@ -4,12 +4,14 @@ services:
     image: postgres:latest
     container_name: {{project_slug}}_postgres_db
     restart: unless-stopped
+    env_file:
+      - ../.env
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:${POSTGRES_PORT}"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init:/docker-entrypoint-initdb.d
@@ -18,13 +20,15 @@ services:
     image: mysql:latest
     container_name: {{project_slug}}_mysql_db
     restart: unless-stopped
+    env_file:
+      - ../.env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "3306:${MYSQL_PORT}"
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
