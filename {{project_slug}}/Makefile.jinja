@@ -3,47 +3,82 @@ export
 
 PROJECT_NAME = {{ project_name }}
 
+BLUE = \033[1;34m
+GREEN = \033[1;32m
+YELLOW = \033[1;33m
+CYAN = \033[36m
+RESET = \033[0m
+
+define print_separator
+	@printf '%*s\n' "$$(tput cols)" '' | tr ' ' '═'
+endef
+
+define start_task
+	@echo ""
+	$(call print_separator)
+	@echo "$(BLUE)$(1)$(RESET)"
+	$(call print_separator)
+endef
+
+define end_task
+	@echo ""
+	@echo "$(GREEN)$(1)$(RESET)"
+	@echo ""
+endef
+
 .PHONY: git-init
 git-init:
+	$(call start_task,Initializing git repository...)
 	git init
 	git add .
 	git commit -m "Initial commit"
+	$(call end_task,Git repository initialized!)
 
 .PHONY: uv-sync
 uv-sync:
+	$(call start_task,Syncing dependencies...)
 	uv sync
 	uv sync --extra dev
+	$(call end_task,Dependencies synced!)
 
 .PHONY: pre-commit-setup
 pre-commit-setup:
+	$(call start_task,Setting up pre-commit hooks...)
 	uv run pre-commit install
 	uv run pre-commit autoupdate
+	$(call end_task,Pre-commit hooks configured!)
 
 .PHONY: pre-commit-run
 pre-commit-run:
+	$(call start_task,Running pre-commit hooks...)
 	uv run pre-commit run --all-files --show-diff-on-failure || \
 	uv run pre-commit run --all-files
+	$(call end_task,Pre-commit checks completed!)
 
 .PHONY: build-app
 build-app:
+	$(call start_task,Building application containers...)
 	docker compose -f docker/apps.yaml build
+	$(call end_task,Application built!)
 
 .PHONY: up-app
 up-app:
+	$(call start_task,Starting application containers...)
 	docker compose -f docker/apps.yaml up -d
+	$(call end_task,Application started!)
 
 .PHONY: up-storages
 up-storages:
+	$(call start_task,Starting storage containers...)
 	docker compose -f docker/storages.yaml up -d
+	$(call end_task,Storage services started!)
 
 .PHONY: logs
 logs:
+	$(call start_task,Viewing application logs...)
 	docker compose -f docker/apps.yaml logs -f
 
 .PHONY: project
 project: git-init uv-sync \
 	pre-commit-setup pre-commit-run \
 	build-app up-app up-storages logs
-
-.PHONY: dev
-dev: pre-commit-run build-up up-app up-storages logs
