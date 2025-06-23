@@ -1,23 +1,24 @@
 from .base import *
 
+# Database configuration based on selected backend
 DATABASES = {
     {%- if use_psql %}
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('POSTGRES_DB', default="{{project_slug}}_db"),
-        'USER': env('POSTGRES_USER', default="{{author_username}}"),
-        'PASSWORD': env('POSTGRES_PASSWORD', default="postgrespass123"),
-        'HOST': env('POSTGRES_HOST', default="localhost"),
-        'PORT': env('POSTGRES_PORT', default="5432"),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("POSTGRES_DB", default="{{project_slug}}_db"),
+        "USER": env("POSTGRES_USER", default="postgres"),
+        "PASSWORD": env("POSTGRES_PASSWORD", default="dev_postgres_password_change_me"),
+        "HOST": env("POSTGRES_HOST", default="postgres"),
+        "PORT": env("POSTGRES_PORT", default="5432"),
     },
     {%- else %}
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('MYSQL_DATABASE', default="{{project_slug}}_db"),
-        'USER': env('MYSQL_USER', default="{{author_username}}"),
-        'PASSWORD': env('MYSQL_PASSWORD', default="mysqlrootpass123"),
-        'HOST': env('MYSQL_HOST', default="localhost"),
-        'PORT': env('MYSQL_PORT', default="3306"),
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": env("MYSQL_DATABASE", default="{{project_slug}}_db"),
+        "USER": env("MYSQL_USER", default="{{author_username}}"),
+        "PASSWORD": env("MYSQL_PASSWORD", default="dev_mysql_password_change_me"),
+        "HOST": env("MYSQL_HOST", default="mysql"),
+        "PORT": env("MYSQL_PORT", default="3306"),
     },
     {%- endif %}
 }

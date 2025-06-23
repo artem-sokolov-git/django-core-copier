@@ -10,9 +10,11 @@ services:
       - ../.env
     depends_on:
       {%- if use_psql %}
-      - postgres
+      postgres:
+        condition: service_healthy
       {%- else %}
-      - mysql
+      mysql:
+        condition: service_healthy
       {%- endif %}
 
 include:

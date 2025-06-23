@@ -78,7 +78,25 @@ logs:
 	$(call start_task,Viewing application logs...)
 	docker compose -f docker/apps.yaml logs -f
 
+.PHONY: migrate
+migrate:
+	$(call start_task,Running database migrations...)
+	docker compose -f docker/apps.yaml exec web uv run python manage.py migrate
+	$(call end_task,Database migrations completed!)
+
+.PHONY: clean-db
+clean-db:
+	$(call start_task,Cleaning database volumes...)
+	docker compose -f docker/apps.yaml down
+	docker compose -f docker/storages.yaml down -v
+	docker volume prune -f
+	$(call end_task,Database volumes cleaned!)
+
+.PHONY: rebuild
+rebuild: clean-db build-app up-storages up-app migrate
+	$(call end_task,Project rebuilt successfully!)
+
 .PHONY: project
 project: git-init uv-sync \
 	pre-commit-setup pre-commit-run \
-	build-app up-app up-storages logs
+	build-app up-storages up-app migrate logs

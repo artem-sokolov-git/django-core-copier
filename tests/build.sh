@@ -35,7 +35,8 @@ uvx copier copy .. . \
     -d project_name="$PROJECT_NAME" \
     -d author_name="Artem Sokolov" \
     -d author_email="artem.sokolov.dev@gmail.com" \
-    --defaults
+    --defaults \
+    --quiet 2>/dev/null
 end_task "Template generated successfully!"
 
 start_task "Setting up project environment..."
