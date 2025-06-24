@@ -33,6 +33,7 @@ start_task "Testing template generation..."
 rm -rf $PROJECT_NAME
 uvx copier copy .. . \
     -d project_name="$PROJECT_NAME" \
+    -d use_psql=True \
     -d author_name="Artem Sokolov" \
     -d author_email="artem.sokolov.dev@gmail.com" \
     --defaults \

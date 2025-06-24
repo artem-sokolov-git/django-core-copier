@@ -26,6 +26,18 @@ define end_task
 	@echo ""
 endef
 
+STORAGES = docker/storages.yaml
+APPS = docker/apps.yaml
+{%- if use_psql %}
+STORAGE_CON = {{project_slug}}_psql
+{%- else %}
+STORAGE_CON = {{project_slug}}_mysql
+{%- endif %}
+DC = docker compose
+WEB_CON = {{project_slug}}_web
+MANAGE = uv run python manage.py
+PRECOMMIT = uv run pre-commit
+
 .PHONY: git-init
 git-init:
 	$(call start_task,Initializing git repository...)
@@ -44,51 +56,51 @@ uv-sync:
 .PHONY: pre-commit-setup
 pre-commit-setup:
 	$(call start_task,Setting up pre-commit hooks...)
-	uv run pre-commit install
-	uv run pre-commit autoupdate
+	$(PRECOMMIT) install
+	$(PRECOMMIT) autoupdate
 	$(call end_task,Pre-commit hooks configured!)
 
 .PHONY: pre-commit-run
 pre-commit-run:
 	$(call start_task,Running pre-commit hooks...)
-	uv run pre-commit run --all-files --show-diff-on-failure || \
-	uv run pre-commit run --all-files
+	$(PRECOMMIT) run --all-files --show-diff-on-failure || \
+	$(PRECOMMIT) run --all-files
 	$(call end_task,Pre-commit checks completed!)
 
 .PHONY: build-app
 build-app:
 	$(call start_task,Building application containers...)
-	docker compose -f docker/apps.yaml build
+	$(DC) -f $(APPS) build
 	$(call end_task,Application built!)
 
 .PHONY: up-app
 up-app:
 	$(call start_task,Starting application containers...)
-	docker compose -f docker/apps.yaml up -d
+	$(DC) -f $(APPS) up -d
 	$(call end_task,Application started!)
 
 .PHONY: up-storages
 up-storages:
 	$(call start_task,Starting storage containers...)
-	docker compose -f docker/storages.yaml up -d
+	$(DC) -f $(STORAGES) up -d
 	$(call end_task,Storage services started!)
 
 .PHONY: logs
 logs:
 	$(call start_task,Viewing application logs...)
-	docker compose -f docker/apps.yaml logs -f
+	$(DC) -f $(APPS) logs -f
 
 .PHONY: migrate
 migrate:
 	$(call start_task,Running database migrations...)
-	docker compose -f docker/apps.yaml exec {{project_slug}}_web uv run python manage.py migrate
+	$(DC) -f $(APPS) exec $(WEB_CON) $(MANAGE) migrate
 	$(call end_task,Database migrations completed!)
 
 .PHONY: clean-db
 clean-db:
 	$(call start_task,Cleaning database volumes...)
-	docker compose -f docker/apps.yaml down
-	docker compose -f docker/storages.yaml down -v
+	$(DC) -f $(APPS) down
+	$(DC) -f $(STORAGES) down -v
 	docker volume prune -f
 	$(call end_task,Database volumes cleaned!)
 

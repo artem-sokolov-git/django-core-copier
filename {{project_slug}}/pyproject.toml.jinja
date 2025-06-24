@@ -13,14 +13,17 @@ dependencies = [
     {%- if use_drf %}
     "djangorestframework>=3.16.0",
     {%- endif %}
+]
+
+[project.optional-dependencies]
+
+db = [
     {%- if use_psql %}
     "psycopg[binary]>=3.2.9",
     {%- else %}
     "mysqlclient>=2.2.7",
     {%- endif %}
 ]
-
-[project.optional-dependencies]
 
 dev = [
     "pre-commit>=4.2.0",
