@@ -81,7 +81,7 @@ logs:
 .PHONY: migrate
 migrate:
 	$(call start_task,Running database migrations...)
-	docker compose -f docker/apps.yaml exec web uv run python manage.py migrate
+	docker compose -f docker/apps.yaml exec {{project_slug}}_web uv run python manage.py migrate
 	$(call end_task,Database migrations completed!)
 
 .PHONY: clean-db

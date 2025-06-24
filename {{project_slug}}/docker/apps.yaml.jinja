@@ -1,5 +1,5 @@
 services:
-  web:
+   {{project_slug}}_web:
     build:
       context: ..
       dockerfile: Dockerfile
@@ -10,10 +10,10 @@ services:
       - ../.env
     depends_on:
       {%- if use_psql %}
-      postgres:
+       {{project_slug}}_psql:
         condition: service_healthy
       {%- else %}
-      mysql:
+       {{project_slug}}_mysql:
         condition: service_healthy
       {%- endif %}
 

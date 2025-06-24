@@ -1,8 +1,8 @@
 services:
   {%- if use_psql %}
-  postgres:
+  {{project_slug}}_psql:
     image: postgres:latest
-    container_name: {{project_slug}}_postgres_db
+    container_name: {{project_slug}}_psql
     restart: unless-stopped
     env_file:
       - ../.env
@@ -23,9 +23,9 @@ services:
       timeout: 5s
       retries: 5
   {%- else %}
-  mysql:
+   {{project_slug}}_mysql:
     image: mysql:latest
-    container_name: {{project_slug}}_mysql_db
+    container_name: {{project_slug}}_mysql
     restart: unless-stopped
     env_file:
       - ../.env
