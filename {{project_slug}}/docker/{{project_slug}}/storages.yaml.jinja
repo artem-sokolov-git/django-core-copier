@@ -5,7 +5,7 @@ services:
     container_name: {{project_slug}}_psql
     restart: unless-stopped
     env_file:
-      - ../.env
+      - ../../.env
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -28,7 +28,7 @@ services:
     container_name: {{project_slug}}_mysql
     restart: unless-stopped
     env_file:
-      - ../.env
+      - ../../.env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}

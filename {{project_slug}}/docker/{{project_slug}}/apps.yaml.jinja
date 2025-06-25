@@ -1,13 +1,13 @@
 services:
    {{project_slug}}_web:
     build:
-      context: ..
+      context: ../..
       dockerfile: Dockerfile
     container_name: {{project_slug}}_web
     ports:
       - "8000:8000"
     env_file:
-      - ../.env
+      - ../../.env
     depends_on:
       {%- if use_psql %}
        {{project_slug}}_psql:
