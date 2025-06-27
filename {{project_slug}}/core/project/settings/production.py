@@ -1,12 +1,16 @@
 from . import env
 
 SECRET_KEY = env("SECRET_KEY")
-if SECRET_KEY == "dev-only-secret-key-change-in-production-immediately":
-    raise ValueError("SECRET_KEY must be changed in production! Please set a secure secret key.")
+if SECRET_KEY == "dev-only-secret-key-change-in-production-immediately":  # noqa
+    raise ValueError(
+        "SECRET_KEY must be changed in production! Please set a secure secret key."
+    )
 
 DEBUG = env("DEBUG")
 if DEBUG:
-    raise ValueError("DEBUG must be False in production! Set DEBUG=False in environment variables.")
+    raise ValueError(
+        "DEBUG must be False in production! Set DEBUG=False in environment variables."
+    )
 
 if not env("ALLOWED_HOSTS", default=""):
     raise ValueError("ALLOWED_HOSTS environment variable must be set in production")

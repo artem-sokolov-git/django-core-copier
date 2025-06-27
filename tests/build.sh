@@ -35,6 +35,7 @@ uv tool run copier copy .. . \
     -d project_name="$PROJECT_NAME" \
     -d use_psql=False \
     -d use_drf=False \
+    -d use_ruff=True \
     -d author_name="Artem Sokolov" \
     -d author_email="artem.sokolov.dev@gmail.com" \
     --defaults \
