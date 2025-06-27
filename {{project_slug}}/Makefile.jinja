@@ -80,7 +80,7 @@ up-app:
 .PHONY: up-storages
 up-storages:
 	$(call start_task,Starting storage containers...)
-	$(DC) -f $(STORAGES) up -d
+	$(DC) -f $(STORAGES) up -d --remove-orphans
 	$(call end_task,Storage services started!)
 
 .PHONY: logs
@@ -109,4 +109,4 @@ rebuild: clean-db build-app up-storages up-app migrate
 .PHONY: project
 project: git-init uv-sync \
 	pre-commit-setup pre-commit-run \
-	build-app up-storages up-app migrate logs
+	build-app up-storages up-app migrate
