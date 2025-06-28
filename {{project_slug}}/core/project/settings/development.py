@@ -1,7 +1,7 @@
 try:
     import debug_toolbar  # noqa
 
-    from . import INSTALLED_APPS, MIDDLEWARE  # noqa
+    from .base import INSTALLED_APPS, MIDDLEWARE  # noqa
 
     INSTALLED_APPS = INSTALLED_APPS + ["debug_toolbar"]
     MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
