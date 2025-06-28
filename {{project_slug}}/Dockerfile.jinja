@@ -32,7 +32,7 @@ USER app
 COPY --chown=app:app pyproject.toml ./
 
 # Install dependencies with optimizations
-RUN uv sync --no-dev --extra db --compile-bytecode
+RUN uv sync --extra db --extra dev --compile-bytecode
 
 # Copy application code
 COPY --chown=app:app . .

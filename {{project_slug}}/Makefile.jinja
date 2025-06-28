@@ -106,7 +106,13 @@ clean-db:
 rebuild: clean-db build-app up-storages up-app migrate
 	$(call end_task,Project rebuilt successfully!)
 
+.PHONY: test
+test:
+	$(call start_task,Running tests in container...)
+	$(DC) -f $(APPS) exec $(WEB_CON) uv run pytest
+	$(call end_task,Tests completed!)
+
 .PHONY: project
 project: git-init uv-sync \
 	pre-commit-setup pre-commit-run \
-	build-app up-storages up-app migrate
+	build-app up-storages up-app migrate test

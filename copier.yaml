@@ -2,7 +2,7 @@ _exclude:
   - "*"
   - "!*/"
   - ".git"
-  - "tests"
+  - "/tests"
 
 project_name:
   type: str
