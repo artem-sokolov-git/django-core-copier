@@ -9,7 +9,7 @@ services:
     env_file:
       - ../../.env
     depends_on:
-      {%- if use_psql %}
+      {%- if database == "postgresql" %}
        {{project_slug}}_psql:
         condition: service_healthy
       {%- else %}

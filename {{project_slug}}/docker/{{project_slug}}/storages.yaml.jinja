@@ -1,5 +1,5 @@
 services:
-  {%- if use_psql %}
+  {%- if database == "postgresql" %}
   {{project_slug}}_psql:
     image: postgres:latest
     container_name: {{project_slug}}_psql
@@ -43,7 +43,7 @@ services:
   {%- endif %}
 
 volumes:
-  {%- if use_psql %}
+  {%- if database == "postgresql" %}
   postgres_data:
   {%- else %}
   mysql_data:
