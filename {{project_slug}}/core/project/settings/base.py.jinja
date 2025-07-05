@@ -13,7 +13,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    {%- if use_drf %}
+    {%- if api_framework == "drf" %}
     "rest_framework",
     {%- endif %}
 ]
@@ -49,7 +49,7 @@ WSGI_APPLICATION = "core.project.wsgi.application"
 
 DATABASES = {
     "default": {
-    {%- if use_psql %}
+    {%- if database == "postgresql" %}
         "ENGINE": "django.db.backends.postgresql",
         "NAME": env("POSTGRES_DB"),
         "USER": env("POSTGRES_USER"),
@@ -92,7 +92,7 @@ STATIC_ROOT = env("STATIC_ROOT")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-{%- if use_drf %}
+{%- if api_framework == "drf" %}
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,

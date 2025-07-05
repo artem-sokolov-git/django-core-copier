@@ -15,7 +15,7 @@ env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, []),
     ########################################################################
-    {%- if use_psql %}
+    {%- if database == "postgresql" %}
     ## POSTGRES SETTINGS
     POSTGRES_DB=(str, "postgres_db"),
     POSTGRES_USER=(str, "postgres"),
