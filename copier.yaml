@@ -4,9 +4,24 @@ _exclude:
   - ".git"
   - "/tests"
 
+_external_data:
+  settings: settings.yaml
+
+_message_before_copy: |
+  🚀 Welcome to Django Core Template!
+
+  This template will create a full-featured Django application with:
+  - Django REST Framework/Django Ninja (optional)
+  - PostgreSQL/MYSQL support (optional)
+  - Ruff for linting (optional)
+  - Ready-to-use project structure
+
+  Make sure you have Python 3.12+ installed before starting.
+
 project_name:
   type: str
   help: "What is the name of your project?"
+  default: Django Core Project
 
 project_slug:
   type: str
@@ -28,28 +43,41 @@ python_version:
   default: "3.12"
 
 author_name:
-  type: str
-  help: "What is the name of the author?"
+  default: "{{ _external_data.settings.author_name | default('default_author_name') }}"
 
 author_username:
-  type: str
   default: "{{ author_name | lower | replace(' ', '') }}"
 
 author_email:
+  default: "{{ _external_data.settings.author_email | default('default_author_email') }}"
+
+api_framework:
   type: str
-  help: "What is the email of the author?"
+  help: "Which API framework do you want to use?"
+  choices:
+    - ninja
+    - drf
+  default: ninja
 
-use_drf:
-  type: bool
-  help: "Do you want to use Django REST Framework?"
-  default: true
+linter:
+  type: str
+  help: "Which linter do you want to use?"
+  choices:
+    - ruff
+    - flake8
+  default: ruff
 
-use_ruff:
-  type: bool
-  help: "Do you want to use Ruff?"
-  default: true
+database:
+  type: str
+  help: "Which database do you want to use?"
+  choices:
+    - postgresql
+    - mysql
+  default: postgresql
 
-use_psql:
-  type: bool
-  help: "Do you want to use Postgresql?"
-  default: true
+_message_after_copy: |
+    Your project "{{ project_name }}" has been created successfully!
+
+_tasks:
+  - command: "mv {{project_slug}}/.env.example {{project_slug}}/.env"
+    when: "{{ _copier_operation == 'copy' }}"
