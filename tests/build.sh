@@ -38,15 +38,6 @@ uv tool run copier copy .. . \
     -d linter=ruff \
     -d author_name="Artem Sokolov" \
     -d author_email="artem.sokolov.dev@gmail.com" \
-    --defaults \
-    --quiet 2>/dev/null
+    --trust \
+    --defaults
 end_task "Template generated successfully!"
-
-start_task "Setting up project environment..."
-cd $PROJECT_NAME
-mv .env.example .env
-end_task "Environment configured!"
-
-start_task "Running project setup..."
-make project
-end_task "Build completed successfully!"
