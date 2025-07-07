@@ -84,14 +84,14 @@ postgres_password:
   help: "Which postgres password do you want to use?"
   default: "{{ _external_data.secrets.psql_password | default('postgresqlpass') }}"
 
-msql_password:
+mysql_password:
   type: str
   secret: true
   when: "{{ database == 'mysql' }}"
-  help: "Which msql password do you want to use?"
-  default: "{{ _external_data.secrets.msql_password | default('msqlpass') }}"
+  help: "Which mysql password do you want to use?"
+  default: "{{ _external_data.secrets.mysql_password | default('mysqlpass') }}"
 
-msql_root_password:
+mysql_root_password:
   type: str
   secret: true
   when: "{{ database == 'mysql' }}"
