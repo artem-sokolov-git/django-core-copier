@@ -5,7 +5,8 @@ _exclude:
   - "/tests"
 
 _external_data:
-  settings: settings.yaml
+  secrets: .secrets.yaml
+  defaults: defaults.yaml
 
 _message_before_copy: |
   🚀 Welcome to Django Core Template!
@@ -43,13 +44,13 @@ python_version:
   default: "3.12"
 
 author_name:
-  default: "{{ _external_data.settings.author_name | default('default_author_name') }}"
+  default: "{{ _external_data.defaults.author_name | default('default_author_name') }}"
 
 author_username:
   default: "{{ author_name | lower | replace(' ', '') }}"
 
 author_email:
-  default: "{{ _external_data.settings.author_email | default('default_author_email') }}"
+  default: "{{ _external_data.defaults.author_email | default('default_author_email') }}"
 
 api_framework:
   type: str
@@ -57,7 +58,7 @@ api_framework:
   choices:
     - ninja
     - drf
-  default: ninja
+  default: "{{ _external_data.defaults.api_framework | default('ninja') }}"
 
 linter:
   type: str
@@ -66,6 +67,7 @@ linter:
     - ruff
     - flake8
   default: ruff
+  default: "{{ _external_data.defaults.linter | default('ruff') }}"
 
 database:
   type: str
@@ -73,11 +75,32 @@ database:
   choices:
     - postgresql
     - mysql
-  default: postgresql
+  default: "{{ _external_data.defaults.database | default('postgresql') }}"
+
+postgres_password:
+  type: str
+  secret: true
+  when: "{{ database == 'postgresql' }}"
+  help: "Which postgres password do you want to use?"
+  default: "{{ _external_data.secrets.psql_password | default('postgresqlpass') }}"
+
+msql_password:
+  type: str
+  secret: true
+  when: "{{ database == 'mysql' }}"
+  help: "Which msql password do you want to use?"
+  default: "{{ _external_data.secrets.msql_password | default('msqlpass') }}"
+
+msql_root_password:
+  type: str
+  secret: true
+  when: "{{ database == 'mysql' }}"
+  help: "Which mysql root password do you want to use?"
+  default: "{{ _external_data.secrets.mysql_root_password | default('mysqlrootpass') }}"
 
 _message_after_copy: |
     Your project "{{ project_name }}" has been created successfully!
 
 _tasks:
-  - command: "mv {{project_slug}}/.env.example {{project_slug}}/.env"
+  - command: "mv {{ project_slug }}/.env.example {{ project_slug }}/.env"
     when: "{{ _copier_operation == 'copy' }}"

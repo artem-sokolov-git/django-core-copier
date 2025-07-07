@@ -1,0 +1,5 @@
+database: "postgresql"
+api_framework: "ninja"
+linter: "ruff"
+author_name: "Test User"
+author_email: "test.user.dev@email.com"

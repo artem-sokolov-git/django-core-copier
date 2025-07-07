@@ -30,14 +30,8 @@ end_task() {
 }
 
 start_task "Testing template generation..."
-rm -rf $PROJECT_NAME
 uv tool run copier copy .. . \
     -d project_name="$PROJECT_NAME" \
-    -d database=postgresql \
-    -d api_framework=ninja \
-    -d linter=ruff \
-    -d author_name="Artem Sokolov" \
-    -d author_email="artem.sokolov.dev@gmail.com" \
     --trust \
-    --defaults
+    -w
 end_task "Template generated successfully!"
