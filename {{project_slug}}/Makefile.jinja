@@ -36,52 +36,25 @@ WEB_CON = {{project_slug}}_web
 MANAGE = uv run python manage.py
 PRECOMMIT = uv run pre-commit
 
-.PHONY: git-init
-git-init:
-	$(call start_task,Initializing git repository...)
-	git init
-	git add .
-	git commit -m "Initial commit"
-	$(call end_task,Git repository initialized!)
-
-.PHONY: uv-sync
-uv-sync:
-	$(call start_task,Syncing dependencies...)
-	uv sync
-	uv sync --extra dev
-	$(call end_task,Dependencies synced!)
-
-.PHONY: pre-commit-setup
-pre-commit-setup:
-	$(call start_task,Setting up pre-commit hooks...)
-	$(PRECOMMIT) install
-	$(PRECOMMIT) autoupdate
-	$(call end_task,Pre-commit hooks configured!)
-
-.PHONY: pre-commit-run
-pre-commit-run:
+.PHONY: pre-commit-check
+pre-commit-check:
 	$(call start_task,Running pre-commit hooks...)
-	$(PRECOMMIT) run --all-files --show-diff-on-failure || \
-	$(PRECOMMIT) run --all-files
-	$(call end_task,Pre-commit checks completed!)
+	$(PRECOMMIT) run --all-files --show-diff-on-failure
 
 .PHONY: build-app
 build-app:
 	$(call start_task,Building application containers...)
 	$(DC) -f $(APPS) build
-	$(call end_task,Application built!)
 
 .PHONY: up-app
 up-app:
 	$(call start_task,Starting application containers...)
 	$(DC) -f $(APPS) up -d
-	$(call end_task,Application started!)
 
 .PHONY: up-storages
 up-storages:
 	$(call start_task,Starting storage containers...)
 	$(DC) -f $(STORAGES) up -d --remove-orphans
-	$(call end_task,Storage services started!)
 
 .PHONY: logs
 logs:
@@ -92,7 +65,6 @@ logs:
 migrate:
 	$(call start_task,Running database migrations...)
 	$(DC) -f $(APPS) exec $(WEB_CON) $(MANAGE) migrate
-	$(call end_task,Database migrations completed!)
 
 .PHONY: clean-db
 clean-db:
@@ -102,17 +74,20 @@ clean-db:
 	docker volume prune -f
 	$(call end_task,Database volumes cleaned!)
 
-.PHONY: rebuild
-rebuild: clean-db build-app up-storages up-app migrate
-	$(call end_task,Project rebuilt successfully!)
-
 .PHONY: test
 test:
 	$(call start_task,Running tests in container...)
 	$(DC) -f $(APPS) exec $(WEB_CON) uv run pytest
-	$(call end_task,Tests completed!)
+
+.PHONY: mypy
+mypy:
+	$(call start_task,Running mypy type checking...)
+	$(DC) -f $(APPS) exec $(WEB_CON) uv run mypy .
+
+.PHONY: rebuild
+rebuild: clean-db build-app up-storages up-app migrate mypy test
+	$(call end_task,Project rebuilt successfully!)
 
 .PHONY: project
-project: git-init uv-sync \
-	pre-commit-setup pre-commit-run \
-	build-app up-storages up-app migrate test
+project: build-app up-storages up-app migrate mypy test
+	$(call end_task,Project built successfully!)

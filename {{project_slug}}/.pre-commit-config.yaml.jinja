@@ -12,7 +12,7 @@ repos:
 
   {%- if linter == "ruff" %}
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.1
+    rev: v0.12.2
     hooks:
       - id: ruff
         args: [--fix]
@@ -29,13 +29,3 @@ repos:
     hooks:
       - id: flake8
   {%- endif %}
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.16.1
-    hooks:
-      - id: mypy
-        additional_dependencies: [
-          django-stubs>=5.1.0,
-          django-environ>=0.12.0,
-          django-split-settings>=1.3.2,
-        ]
