@@ -30,8 +30,9 @@ end_task() {
 }
 
 start_task "Testing template generation..."
+rm -rf $PROJECT_NAME
 uv tool run copier copy .. . \
     -d project_name="$PROJECT_NAME" \
     --trust \
-    -w
+    --defaults
 end_task "Template generated successfully!"
