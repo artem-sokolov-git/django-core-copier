@@ -36,33 +36,10 @@ WEB_CON = {{project_slug}}_web
 MANAGE = uv run python manage.py
 PRECOMMIT = uv run pre-commit
 
-.PHONY: git-init
-git-init:
-	$(call start_task,Initializing git repository...)
-	git init
-	git add .
-	git commit -m "Initial commit"
-	$(call end_task,Git repository initialized!)
-
-.PHONY: uv-sync
-uv-sync:
-	$(call start_task,Syncing dependencies...)
-	uv sync
-	uv sync --extra dev
-	$(call end_task,Dependencies synced!)
-
-.PHONY: pre-commit-setup
-pre-commit-setup:
-	$(call start_task,Setting up pre-commit hooks...)
-	$(PRECOMMIT) install
-	$(PRECOMMIT) autoupdate
-	$(call end_task,Pre-commit hooks configured!)
-
-.PHONY: pre-commit-run
-pre-commit-run:
+.PHONY: pre-commit-check
+pre-commit-check:
 	$(call start_task,Running pre-commit hooks...)
-	$(PRECOMMIT) run --all-files --show-diff-on-failure || \
-	$(PRECOMMIT) run --all-files
+	$(PRECOMMIT) run --all-files --show-diff-on-failure
 	$(call end_task,Pre-commit checks completed!)
 
 .PHONY: build-app
