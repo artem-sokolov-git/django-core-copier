@@ -66,10 +66,10 @@ default:
   USE_TZ: true
 
   STATIC_URL: "/static/"
-  STATIC_ROOT: "@format {this.BASE_DIR}/staticfiles"
+  STATIC_ROOT: "@base_dir staticfiles"
 
   MEDIA_URL: "/media/"
-  MEDIA_ROOT: "@format {this.BASE_DIR}/media"
+  MEDIA_ROOT: "@base_dir media"
 
   DEFAULT_AUTO_FIELD: "django.db.models.BigAutoField"
 
