@@ -12,8 +12,7 @@ license = { file = "LICENSE" }
 authors = [{ name = "{{ author_name }}", email = "{{ author_email }}" }]
 dependencies = [
     "django>=5.2.3",
-    "django-split-settings>=1.3.2",
-    "django-environ>=0.12.0",
+    "dynaconf>=3.2.11",
     {%- if api_framework == "drf" %}
     "djangorestframework>=3.16.0",
     {%- else %}
@@ -74,7 +73,7 @@ module = "*.migrations.*"
 ignore_errors = true
 
 [tool.django-stubs]
-django_settings_module = "core.project.settings.development"
+django_settings_module = "core.project.settings"
 
 # =============================================================================
 # PYTEST CONFIGURATION

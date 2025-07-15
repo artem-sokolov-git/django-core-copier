@@ -1,0 +1,12 @@
+"""Django settings for {{project_name}} project."""
+
+from pathlib import Path
+
+import dynaconf
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+settings = dynaconf.DjangoDynaconf(
+    __name__,
+    BASE_DIR=str(BASE_DIR),
+)
