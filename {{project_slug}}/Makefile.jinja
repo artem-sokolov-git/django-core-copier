@@ -79,6 +79,11 @@ clean-db:
 	docker volume prune -f
 	$(call end_task,Database volumes cleaned!)
 
+.PHONY: dj-shell
+dj-shell:
+	$(call start_task,Enter to django shell...)
+	$(DC) -f $(APPS) exec $(WEB_CON) $(MANAGE) shell -v 2
+
 .PHONY: test
 test:
 	$(call start_task,Running tests in container...)

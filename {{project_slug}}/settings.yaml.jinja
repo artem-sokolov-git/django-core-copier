@@ -12,6 +12,7 @@ default:
     {%- if api_framework == "drf" %}
     - "rest_framework"
     {%- endif %}
+    - "core.project"
 
   MIDDLEWARE:
     - "django.middleware.security.SecurityMiddleware"
