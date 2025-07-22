@@ -44,14 +44,14 @@ default:
       USER: "@format {env[POSTGRES_USER]}"
       PASSWORD: "@format {env[POSTGRES_PASSWORD]}"
       HOST: "@format {env[POSTGRES_HOST]}"
-      PORT: "@format {env[POSTGRES_PORT]}"
+      PORT: 5432
       {%- else %}
       ENGINE: "django.db.backends.mysql"
       NAME: "@format {env[MYSQL_DATABASE]}"
       USER: "@format {env[MYSQL_USER]}"
       PASSWORD: "@format {env[MYSQL_PASSWORD]}"
       HOST: "@format {env[MYSQL_HOST]}"
-      PORT: "@format {env[MYSQL_PORT]}"
+      PORT: 3306
       {%- endif %}
 
   AUTH_PASSWORD_VALIDATORS:

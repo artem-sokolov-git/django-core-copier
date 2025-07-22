@@ -84,6 +84,12 @@ postgres_password:
   help: "Which postgres password do you want to use?"
   default: "{{ _external_data.secrets.psql_password | default('postgresqlpass') }}"
 
+docker_postgres_port:
+  type: str
+  when: "{{ database == 'postgresql' }}"
+  help: "Which docker postgres port do you want to use?"
+  default: 5432
+
 mysql_password:
   type: str
   secret: true
@@ -97,6 +103,12 @@ mysql_root_password:
   when: "{{ database == 'mysql' }}"
   help: "Which mysql root password do you want to use?"
   default: "{{ _external_data.secrets.mysql_root_password | default('mysqlrootpass') }}"
+
+docker_mysql_port:
+  type: str
+  when: "{{ database == 'mysql' }}"
+  help: "Which docker mysql port do you want to use?"
+  default: 3306
 
 _message_after_copy: |
     Your project "{{ project_name }}" has been created successfully!
