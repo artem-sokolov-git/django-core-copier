@@ -7,12 +7,7 @@ import dynaconf
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
-def setup_base_dir_converter():
-    """Setup BASE_DIR converter for use in settings files."""
-    dynaconf.add_converter("base_dir", lambda path: str(BASE_DIR / path))
-
-
 settings = dynaconf.DjangoDynaconf(
     __name__,
-    post_hooks=setup_base_dir_converter,
+    BASE_DIR=str(BASE_DIR),
 )
