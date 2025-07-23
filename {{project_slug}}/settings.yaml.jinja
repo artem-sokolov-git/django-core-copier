@@ -2,6 +2,7 @@
 # For use with dynaconf.DjangoDynaconf
 
 default:
+  SECRET_KEY: "@format {env[SECRET_KEY]}"
   INSTALLED_APPS:
     - "django.contrib.admin"
     - "django.contrib.auth"

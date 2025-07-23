@@ -36,6 +36,11 @@ WEB_CON = {{project_slug}}_web
 MANAGE = uv run python manage.py
 PRECOMMIT = uv run pre-commit
 
+.PHONY: generate-secret-key
+generate-secret-key:
+	$(call start_task,Generating SECRET_KEY...)
+	uv run python scripts/generate_secret_key.py
+
 .PHONY: pre-commit-check
 pre-commit-check:
 	$(call start_task,Running pre-commit hooks...)
@@ -98,9 +103,9 @@ mypy:
 	$(DC) -f $(APPS) exec $(WEB_CON) uv run mypy .
 
 .PHONY: rebuild
-rebuild: clean-db build-app up-storages up-app migrate mypy test
+rebuild: clean-db generate-secret-key build-app up-storages up-app migrate mypy test
 	$(call end_task,Project rebuilt successfully!)
 
 .PHONY: project
-project: build-app up-storages up-app migrate mypy test
+project: generate-secret-key build-app up-storages up-app migrate mypy test
 	$(call end_task,Project built successfully!)
