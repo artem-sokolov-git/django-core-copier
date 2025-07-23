@@ -33,8 +33,8 @@ start_task "Testing template generation..."
 rm -rf $PROJECT_NAME
 uv tool run copier copy .. . \
     -d project_name="$PROJECT_NAME" \
-    -d database="mysql" \
-    -d docker_mysql_port="3326" \
+    -d database="postgresql" \
+    -d docker_mysql_port="5466" \
     --trust \
     --defaults
 end_task "Template generated successfully!"

@@ -40,25 +40,21 @@ PRECOMMIT = uv run pre-commit
 pre-commit-check:
 	$(call start_task,Running pre-commit hooks...)
 	$(PRECOMMIT) run --all-files --show-diff-on-failure
-	$(call end_task,Pre-commit checks completed!)
 
 .PHONY: build-app
 build-app:
 	$(call start_task,Building application containers...)
 	$(DC) -f $(APPS) build
-	$(call end_task,Application built!)
 
 .PHONY: up-app
 up-app:
 	$(call start_task,Starting application containers...)
 	$(DC) -f $(APPS) up -d
-	$(call end_task,Application started!)
 
 .PHONY: up-storages
 up-storages:
 	$(call start_task,Starting storage containers...)
 	$(DC) -f $(STORAGES) up -d --remove-orphans
-	$(call end_task,Storage services started!)
 
 .PHONY: logs
 logs:
@@ -69,7 +65,6 @@ logs:
 migrate:
 	$(call start_task,Running database migrations...)
 	$(DC) -f $(APPS) exec $(WEB_CON) $(MANAGE) migrate
-	$(call end_task,Database migrations completed!)
 
 .PHONY: clean-db
 clean-db:
@@ -77,24 +72,30 @@ clean-db:
 	$(DC) -f $(APPS) down
 	$(DC) -f $(STORAGES) down -v
 	docker volume prune -f
-	$(call end_task,Database volumes cleaned!)
 
 .PHONY: dj-shell
 dj-shell:
 	$(call start_task,Enter to django shell...)
 	$(DC) -f $(APPS) exec $(WEB_CON) $(MANAGE) shell -v 2
 
+.PHONY: db-shell
+db-shell:
+	$(call start_task,Connecting to database shell...)
+{%- if database == "postgresql" %}
+	$(DC) -f $(STORAGES) exec $(STORAGE_CON) psql -U $$POSTGRES_USER -d $$POSTGRES_DB
+{%- else %}
+	$(DC) -f $(STORAGES) exec $(STORAGE_CON) mysql -u $$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE
+{%- endif %}
+
 .PHONY: test
 test:
 	$(call start_task,Running tests in container...)
 	$(DC) -f $(APPS) exec $(WEB_CON) uv run pytest
-	$(call end_task,Tests completed!)
 
 .PHONY: mypy
 mypy:
 	$(call start_task,Running mypy type checks in container...)
 	$(DC) -f $(APPS) exec $(WEB_CON) uv run mypy .
-	$(call end_task,MyPy type checks completed!)
 
 .PHONY: rebuild
 rebuild: clean-db build-app up-storages up-app migrate mypy test
