@@ -66,7 +66,6 @@ linter:
   choices:
     - ruff
     - flake8
-  default: ruff
   default: "{{ _external_data.defaults.linter | default('ruff') }}"
 
 database:
@@ -77,32 +76,11 @@ database:
     - mysql
   default: "{{ _external_data.defaults.database | default('postgresql') }}"
 
-postgres_password:
-  type: str
-  secret: true
-  when: "{{ database == 'postgresql' }}"
-  help: "Which postgres password do you want to use?"
-  default: "{{ _external_data.secrets.psql_password | default('postgresqlpass') }}"
-
 docker_postgres_port:
   type: str
   when: "{{ database == 'postgresql' }}"
   help: "Which docker postgres port do you want to use?"
   default: 5432
-
-mysql_password:
-  type: str
-  secret: true
-  when: "{{ database == 'mysql' }}"
-  help: "Which mysql password do you want to use?"
-  default: "{{ _external_data.secrets.mysql_password | default('mysqlpass') }}"
-
-mysql_root_password:
-  type: str
-  secret: true
-  when: "{{ database == 'mysql' }}"
-  help: "Which mysql root password do you want to use?"
-  default: "{{ _external_data.secrets.mysql_root_password | default('mysqlrootpass') }}"
 
 docker_mysql_port:
   type: str

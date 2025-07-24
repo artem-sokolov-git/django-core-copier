@@ -28,18 +28,20 @@ STORAGES = docker/{{project_slug}}/storages.yaml
 APPS = docker/{{project_slug}}/apps.yaml
 {%- if database == "postgresql" %}
 STORAGE_CON = {{project_slug}}_psql
+AUTH = psql -U $$POSTGRES_USER -d $$POSTGRES_DB
 {%- else %}
 STORAGE_CON = {{project_slug}}_mysql
+AUTH = mysql -u $$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE
 {%- endif %}
 DC = docker compose
 WEB_CON = {{project_slug}}_web
 MANAGE = uv run python manage.py
 PRECOMMIT = uv run pre-commit
 
-.PHONY: generate-secret-key
-generate-secret-key:
+.PHONY: generate-secrets
+generate-secrets:
 	$(call start_task,Generating SECRET_KEY...)
-	uv run python scripts/generate_secret_key.py
+	uv run python scripts/generate_secrets.py
 
 .PHONY: pre-commit-check
 pre-commit-check:
@@ -86,11 +88,7 @@ dj-shell:
 .PHONY: db-shell
 db-shell:
 	$(call start_task,Connecting to database shell...)
-{%- if database == "postgresql" %}
-	$(DC) -f $(STORAGES) exec $(STORAGE_CON) psql -U $$POSTGRES_USER -d $$POSTGRES_DB
-{%- else %}
-	$(DC) -f $(STORAGES) exec $(STORAGE_CON) mysql -u $$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE
-{%- endif %}
+	$(DC) -f $(STORAGES) exec $(STORAGE_CON) $(AUTH)
 
 .PHONY: test
 test:
@@ -103,9 +101,9 @@ mypy:
 	$(DC) -f $(APPS) exec $(WEB_CON) uv run mypy .
 
 .PHONY: rebuild
-rebuild: clean-db generate-secret-key build-app up-storages up-app migrate mypy test
+rebuild: clean-db generate-secrets build-app up-storages up-app migrate mypy test
 	$(call end_task,Project rebuilt successfully!)
 
 .PHONY: project
-project: generate-secret-key build-app up-storages up-app migrate mypy test
+project: generate-secrets build-app up-storages up-app migrate mypy test
 	$(call end_task,Project built successfully!)
