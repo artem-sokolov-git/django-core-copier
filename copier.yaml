@@ -87,6 +87,11 @@ docker_mysql_port:
   help: "Which docker mysql port do you want to use?"
   default: 3306
 
+docker_web_port:
+  type: str
+  help: "Which port would you like to use for your web service??"
+  default: 8000
+
 _message_after_copy: |
     Your project "{{ project_name }}" has been created successfully!
 
