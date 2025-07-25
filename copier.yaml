@@ -5,7 +5,6 @@ _exclude:
   - "/tests"
 
 _external_data:
-  secrets: .secrets.yaml
   defaults: defaults.yaml
 
 _message_before_copy: |
