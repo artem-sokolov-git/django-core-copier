@@ -24,8 +24,7 @@ define end_task
 	@echo ""
 endef
 
-STORAGES = docker/{{project_slug}}/storages.yaml
-APPS = docker/{{project_slug}}/apps.yaml
+COMPOSE_FILE = docker-compose.yaml
 {%- if database == "postgresql" %}
 STORAGE_CON = {{project_slug}}_psql
 AUTH = psql -U $$POSTGRES_USER -d $$POSTGRES_DB
@@ -33,7 +32,7 @@ AUTH = psql -U $$POSTGRES_USER -d $$POSTGRES_DB
 STORAGE_CON = {{project_slug}}_mysql
 AUTH = mysql -u $$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE
 {%- endif %}
-DC = docker compose
+DC = docker compose -f $(COMPOSE_FILE)
 WEB_CON = {{project_slug}}_web
 MANAGE = uv run python manage.py
 PRECOMMIT = uv run pre-commit
@@ -51,59 +50,53 @@ pre-commit-check:
 .PHONY: build-app
 build-app:
 	$(call start_task,Building application containers...)
-	$(DC) -f $(APPS) build
+	$(DC) build
 
-.PHONY: up-app
-up-app:
-	$(call start_task,Starting application containers...)
-	$(DC) -f $(APPS) up -d
-
-.PHONY: up-storages
-up-storages:
-	$(call start_task,Starting storage containers...)
-	$(DC) -f $(STORAGES) up -d --remove-orphans
+.PHONY: up
+up:
+	$(call start_task,Starting all containers...)
+	$(DC) up -d
 
 .PHONY: logs
 logs:
 	$(call start_task,Viewing application logs...)
-	$(DC) -f $(APPS) logs -f
+	$(DC) logs -f
 
 .PHONY: migrate
 migrate:
 	$(call start_task,Running database migrations...)
-	$(DC) -f $(APPS) exec $(WEB_CON) $(MANAGE) migrate
+	$(DC) exec $(WEB_CON) $(MANAGE) migrate
 
 .PHONY: clean-db
 clean-db:
 	$(call start_task,Cleaning database volumes...)
-	$(DC) -f $(APPS) down
-	$(DC) -f $(STORAGES) down -v
+	$(DC) down -v
 	docker volume prune -f
 
 .PHONY: dj-shell
 dj-shell:
 	$(call start_task,Enter to django shell...)
-	$(DC) -f $(APPS) exec $(WEB_CON) $(MANAGE) shell -v 2
+	$(DC) exec $(WEB_CON) $(MANAGE) shell -v 2
 
 .PHONY: db-shell
 db-shell:
 	$(call start_task,Connecting to database shell...)
-	$(DC) -f $(STORAGES) exec $(STORAGE_CON) $(AUTH)
+	$(DC) exec $(STORAGE_CON) $(AUTH)
 
 .PHONY: test
 test:
 	$(call start_task,Running tests in container...)
-	$(DC) -f $(APPS) exec $(WEB_CON) uv run pytest
+	$(DC) exec $(WEB_CON) uv run pytest
 
 .PHONY: mypy
 mypy:
 	$(call start_task,Running mypy type checks in container...)
-	$(DC) -f $(APPS) exec $(WEB_CON) uv run mypy .
+	$(DC) exec $(WEB_CON) uv run mypy .
 
 .PHONY: rebuild
-rebuild: clean-db generate-secrets build-app up-storages up-app migrate mypy test
+rebuild: clean-db generate-secrets build-app up migrate mypy test
 	$(call end_task,Project rebuilt successfully!)
 
 .PHONY: project
-project: generate-secrets build-app up-storages up-app migrate mypy test
+project: generate-secrets build-app up migrate mypy test
 	$(call end_task,Project built successfully!)
